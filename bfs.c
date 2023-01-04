@@ -1,184 +1,79 @@
-#include <stdio.h>
-#include <stdlib.h>
- 
-struct node
+#include<stdio.h>
+int V[50],E[50][50],queue[50],n,visited[50],rear=-1,front=-1;
+void enqueue(int x)
 {
-    int vertex;
-    struct node *next;
-};
- 
-struct node *createNode(int);
- 
-struct Graph
-{
-    int numVertices;
-    struct node **adjLists;
-    int *visited;
-};
- 
-struct Graph *createGraph(int vertices)
-{
-    struct Graph *graph = malloc(sizeof(struct Graph));
-    graph->numVertices = vertices;
- 
-    graph->adjLists = malloc(vertices * sizeof(struct node *));
-    graph->visited = malloc(vertices * sizeof(int));
- 
-    int i;
-    for (i = 0; i < vertices; i++)
-    {
-        graph->adjLists[i] = NULL;
-        graph->visited[i] = 0;
-    }
- 
-    return graph;
+if(front==-1)
+front=0;
+rear++;
+queue[rear]=x;
+visited[x]=1;
 }
- 
-void addEdge(struct Graph *graph, int src, int dest)
+int dequeue()
 {
-    struct node *newNode = createNode(dest);
-    newNode->next = graph->adjLists[src];
-    graph->adjLists[src] = newNode;
- 
-    newNode = createNode(src);
-    newNode->next = graph->adjLists[dest];
-    graph->adjLists[dest] = newNode;
+int item=queue[front];
+if(front==rear)
+{
+front=-1;
+rear=-1;
 }
- 
-struct node *createNode(int v)
-{
-    struct node *newNode = malloc(sizeof(struct node));
-    newNode->vertex = v;
-    newNode->next = NULL;
-    return newNode;
+else
+front++;
+return item;
 }
- 
-void printGraph(struct Graph *graph)
+void BFS()
 {
-    int v;
-    for (v = 0; v < graph->numVertices; v++)
-    {
-        struct node *temp = graph->adjLists[v];
-        printf("\n Adjacency list of vertex %d\n ", v);
-        while (temp)
-        {
-            printf("%d -> ", temp->vertex);
-            temp = temp->next;
-        }
-        printf("\n");
-    }
+int u,v,i;
+enqueue(0);
+while(front!=-1)
+{
+u=dequeue();
+printf("Traversed: %d\n",V[u]);
+for(i=0;i<n;i++)
+{
+if(E[u][i]==1)
+{
+v=i;
+if(visited[v]==0)
+enqueue(v);
 }
- 
-void bfs(struct Graph *graph, int startVertex)
-{
-    struct node *queue = NULL;
-    graph->visited[startVertex] = 1;
-    enqueue(&queue, startVertex);
- 
-    while (!isEmpty(queue))
-    {
-        printQueue(queue);
-        int currentVertex = dequeue(&queue);
-        printf("Visited %d ", currentVertex);
- 
-        struct node *temp = graph->adjLists[currentVertex];
- 
-        while (temp)
-        {
-            int adjVertex = temp->vertex;
- 
-            if (graph->visited[adjVertex] == 0)
-            {
-                graph->visited[adjVertex] = 1;
-                enqueue(&queue, adjVertex);
-            }
-            temp = temp->next;
-        }
-    }
 }
- 
-int isEmpty(struct node *queue)
-{
-    return queue == NULL;
 }
- 
-void enqueue(struct node **queue, int value)
-{
-    struct node *newNode = createNode(value);
-    if (isEmpty(*queue))
-    {
-        *queue = newNode;
-    }
-    else
-    {
-        struct node *temp = *queue;
-        while (temp->next)
-        {
-            temp = temp->next;
-        }
-        temp->next = newNode;
-    }
 }
- 
-int dequeue(struct node **queue)
+void main()
 {
-    int nodeData = (*queue)->vertex;
-    struct node *temp = *queue;
-    *queue = (*queue)->next;
-    free(temp);
-    return nodeData;
+int i,j,k=1,u,v,m;
+printf("Enter the number of vertices");
+scanf("%d",&n);
+printf("Enter the vertices");
+for(i=0;i<n;i++)
+{
+printf("Enter the vertex %d ",i+1);
+scanf("%d",&V[i]);
+visited[i]=0;
 }
- 
-void printQueue(struct node *queue)
+for(i=0;i<n;i++)
+for(j=0;j<n;j++)
+E[i][j]=0;
+printf("Enter the number of edges");
+scanf("%d",&m);
+while(k<=m)
 {
-    while (queue)
-    {
-        printf("%d ", queue->vertex);
-        queue = queue->next;
-    }
-    printf("\n");
+printf("Enter the edge %d ",k);
+scanf("%d%d",&u,&v);
+for(i=0;i<n;i++)
+{
+if(u==V[i])
+{u=i;
+break;
+}}
+for(i=0;i<n;i++)
+{
+if(v==V[i])
+{v=i;
+break;
+}}
+E[u][v]=1;
+k++;
 }
- 
-int main(void)
-{
-    struct Graph *graph = createGraph(6);
-    printf("\nWhat do you want to do?\n");
-    printf("1. Add edge\n");
-    printf("2. Print graph\n");
-    printf("3. BFS\n");
-    printf("4. Exit\n");
-    int choice;
-    scanf("%d", &choice);
-    while (choice != 4)
-    {
-        if (choice == 1)
-        {
-            int src, dest;
-            printf("Enter source and destination: ");
-            scanf("%d %d", &src, &dest);
-            addEdge(graph, src, dest);
-        }
-        else if (choice == 2)
-        {
-            printGraph(graph);
-        }
-        else if (choice == 3)
-        {
-            int startVertex;
-            printf("Enter starting vertex: ");
-            scanf("%d", &startVertex);
-            bfs(graph, startVertex);
-        }
-        else
-        {
-            printf("Invalid choice\n");
-        }
-        printf("What do you want to do?\n");
-        printf("1. Add edge\n");
-        printf("2. Print graph\n");
-        printf("3. BFS\n");
-        printf("4. Exit\n");
-        scanf("%d", &choice);
-    }
-    return 0;
+BFS();
 }
