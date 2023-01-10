@@ -1,5 +1,5 @@
-#include < stdio.h > 
-#include < stdlib.h >
+#include<stdio.h> 
+#include<stdlib.h>
 
 // Structure to create a node with data and the next pointer
 struct node {
@@ -12,15 +12,15 @@ struct node * rear = NULL;
 
 // Enqueue() operation on a queue
 void enqueue(int value) {
-    struct node * ptr;
-    ptr = (struct node * ) malloc(sizeof(struct node));
-    ptr - > data = value;
-    ptr - > next = NULL;
+    struct node *ptr;
+    ptr = (struct node*)malloc(sizeof(struct node));
+    ptr->data = value;
+    ptr->next = NULL;
     if ((front == NULL) && (rear == NULL)) {
         front = rear = ptr;
     } else {
-        rear - > next = ptr;
-        rear = ptr;
+        rear->next = ptr;
+        rear=ptr;
     }
     printf("Node is Inserted\n\n");
 }
@@ -31,9 +31,9 @@ int dequeue() {
         printf("\nUnderflow\n");
         return -1;
     } else {
-        struct node * temp = front;
-        int temp_data = front - > data;
-        front = front - > next;
+        struct node *temp=front;
+        int temp_data = front->data;
+        front=front->next;
         free(temp);
         return temp_data;
     }
@@ -48,8 +48,8 @@ void display() {
         printf("The queue is \n");
         temp = front;
         while (temp) {
-            printf("%d--->", temp - > data);
-            temp = temp - > next;
+            printf("%d--->",temp->data);
+            temp=temp->next;
         }
         printf("NULL\n\n");
     }
